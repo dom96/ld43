@@ -11,7 +11,7 @@ type
     thrust*: float
     acceleration*: Vector2f
     speed*: Vector2f
-    shipTexture*: Texture
+    rocketTexture*: Texture
 
 proc newShip*(): Ship =
   result = Ship(
@@ -20,11 +20,11 @@ proc newShip*(): Ship =
     thrust: 0.0,
     acceleration: vec2(0, 0),
     speed: vec2(0, 0),
-    shipTexture: newTexture(getCurrentDir() / "assets" / "ship.png")
+    rocketTexture: newTexture(getCurrentDir() / "assets" / "rocket.png")
   )
 
 proc draw*(ship: Ship, target: RenderWindow) =
-  let sprite = newSprite(ship.shipTexture)
+  let sprite = newSprite(ship.rocketTexture)
 
   sprite.position = vec2(screenSize[0] / 2, screenSize[1] / 2)
   sprite.rotation = ship.rotation

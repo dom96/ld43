@@ -64,9 +64,9 @@ when isMainModule:
           game.ship.thrustUpDown(1)
         of KeyCode.S:
           game.ship.thrustUpDown(-1)
-        of KeyCode.A:
-          game.ship.rotationUpDown(1)
         of KeyCode.D:
+          game.ship.rotationUpDown(1)
+        of KeyCode.A:
           game.ship.rotationUpDown(-1)
         else: discard
 
