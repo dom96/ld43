@@ -1,4 +1,4 @@
-import os
+import os, strformat
 
 import csfml
 
@@ -28,19 +28,31 @@ proc draw*(ship: Ship, target: RenderWindow) =
 
   sprite.position = ship.pos
   sprite.rotation = ship.rotation
+  sprite.origin = vec2(
+    sprite.localBounds.width / 2,
+    sprite.localBounds.height / 2
+  )
 
   target.drawScaled(sprite)
+
+  # Debugging:
+  let debugText = newText(
+    fmt"T: {ship.thrust} S: {ship.speed} A: {ship.acceleration}", pixelFont, 8
+  )
+  debugText.position = vec2(5, 5)
+  debugText.color = color(255, 255, 255, 255)
+  target.drawScaled(debugText)
+
   sprite.destroy()
 
 proc update*(ship: Ship, updateMultiplier: float) =
   # We don't calculate resultant force to simplify things.
   # But we can later: https://bit.ly/2AFDtkl
-  let accel = rotate(vec2(1, 0), ship.rotation) * updateMultiplier * ship.thrust
+  ship.acceleration =
+    rotate(vec2(1, 0), ship.rotation) * updateMultiplier * ship.thrust
 
-  ship.speed = ship.speed + accel
+  ship.speed = ship.speed + ship.acceleration
   ship.pos = ship.pos + ship.speed
-
-
 
 proc thrustUpDown*(ship: Ship, delta: float) =
   ship.thrust += delta
@@ -48,4 +60,4 @@ proc thrustUpDown*(ship: Ship, delta: float) =
   ship.thrust = max(0, delta)
 
 proc rotationUpDown*(ship: Ship, delta: float) =
-  ship.rotation += delta
+  ship.rotation += delta*10

@@ -1,10 +1,15 @@
-import math
+import math, os
 
 import csfml
 
 import consts
 
 converter toCint*(x: int): cint = x.cint
+
+let pixelFont* = newFont(getCurrentDir() / "assets" / "PICO-8.ttf")
+
+proc getAssetsDir*(): string =
+  getCurrentDir() / "assets"
 
 proc drawScaled*[T](target: RenderWindow, obj: T) =
   let original = obj.scale

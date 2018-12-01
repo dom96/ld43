@@ -2,12 +2,14 @@ import os, lenientops
 
 import csfml, csfml/ext
 
-import consts, utils, ship
+import consts, utils, ship, world
 
 type
   Game = ref object
     window: RenderWindow
     ship: Ship
+    world: World
+    camera: View
     updateClock: Clock
 
 proc newGame(): Game =
@@ -17,6 +19,8 @@ proc newGame(): Game =
       "Space Junkies"
     ),
     ship: newShip(),
+    world: newWorld(),
+    camera: newView(),
     updateClock: newClock()
   )
 
