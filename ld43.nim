@@ -1,4 +1,4 @@
-import os, lenientops
+import os, lenientops, strformat
 
 import csfml, csfml/ext
 
@@ -28,14 +28,25 @@ proc newGame(): Game =
 
 proc draw(game: Game) =
   game.window.clear(Black)
+  game.world.draw(game.window, game.camera)
   game.ship.draw(game.window)
+  # Debugging:
+  let debugText = newText(
+    fmt"T: {game.ship.thrust} S: {game.ship.speed} A: {game.ship.acceleration}",
+    pixelFont, 8
+  )
+  debugText.position = vec2(5, 5)
+  debugText.color = color(255, 255, 255, 255)
+  game.window.drawScaled(debugText)
 
   game.window.display()
 
 proc update(game: Game) =
   let updateMultiplier = game.updateClock.restart().asSeconds()
 
+  game.camera.center = game.ship.pos
   game.ship.update(updateMultiplier)
+  game.world.update(game.ship.pos)
 
 when isMainModule:
   var game = newGame()

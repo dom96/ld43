@@ -26,7 +26,7 @@ proc newShip*(): Ship =
 proc draw*(ship: Ship, target: RenderWindow) =
   let sprite = newSprite(ship.shipTexture)
 
-  sprite.position = ship.pos
+  sprite.position = vec2(screenSize[0] / 2, screenSize[1] / 2)
   sprite.rotation = ship.rotation
   sprite.origin = vec2(
     sprite.localBounds.width / 2,
@@ -34,14 +34,6 @@ proc draw*(ship: Ship, target: RenderWindow) =
   )
 
   target.drawScaled(sprite)
-
-  # Debugging:
-  let debugText = newText(
-    fmt"T: {ship.thrust} S: {ship.speed} A: {ship.acceleration}", pixelFont, 8
-  )
-  debugText.position = vec2(5, 5)
-  debugText.color = color(255, 255, 255, 255)
-  target.drawScaled(debugText)
 
   sprite.destroy()
 
