@@ -1,4 +1,8 @@
-## LD43
+## LD43 - Space Junkies
+
+**Compiling:**
+
+``nimble c -r ld43``
 
 ### Mac OS
 

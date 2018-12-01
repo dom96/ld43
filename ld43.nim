@@ -1,10 +1,8 @@
-import os
+import os, lenientops
 
 import csfml, csfml/ext
 
-import utils
-
-const screenSize = (1024, 768)
+import consts, utils
 
 type
   Game = ref object
@@ -12,7 +10,10 @@ type
 
 proc newGame(): Game =
   result = Game(
-    window: newRenderWindow(videoMode(screenSize[0], screenSize[1]), "LD43")
+    window: newRenderWindow(
+      videoMode(int(screenSize[0]*globalScale), int(screenSize[1]*globalScale)),
+      "Space Junkies"
+    )
   )
 
 proc draw(game: Game) =
