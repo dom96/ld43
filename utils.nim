@@ -16,7 +16,15 @@ proc drawScaled*[T](target: RenderWindow, obj: T) =
   let position = obj.position
   obj.scale = obj.scale * globalScale
   obj.position = position * globalScale
-  target.draw(obj)
+
+  # Only draw the object if it's within this target's view.
+  let view = target.view
+  let viewRect = rect(
+    view.center.x - screenSize[0].float, view.center.y - screenSize[1].float,
+    screenSize[0].cfloat*2, screenSize[1].cfloat*2
+  )
+  if viewRect.contains(obj.position):
+    target.draw(obj)
   obj.scale = original
   obj.position = position
 

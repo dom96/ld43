@@ -6,7 +6,7 @@ import utils, consts
 
 type
   JunkKind = enum
-    JunkSatellite
+    JunkSatellite, JunkBooster, JunkSatelliteBig
 
   World* = ref object
     bgTexture*: Texture
@@ -24,16 +24,32 @@ type
     angularVelocity: float
     velocity: Vector2f
 
-const bgScale = 3*globalScale
+const
+  bgScale = 3*globalScale
+  bgMoveFactorY = 100_000
+  bgMoveFactorX = 1_000
+  bgBoundY = (-1000, 1000)
+  bgBoundX = (0, 50_000)
+
 
 const junkNames = {
-  JunkSatellite: [
+  JunkSatellite: @[
     "Sputnik 1",
     "ERS 2",
     "Calsphere",
     "PasComSat",
     "Starshine"
+  ],
+  JunkBooster: @[
+    "SpaceX",
+    "Electron",
+    "Ariane"
+  ],
+  JunkSatelliteBig: @[
+    "ISS",
+    "MIR"
   ]
+
 }.toTable()
 
 proc newJunk*(world: World, kind: JunkKind, pos: Vector2f): Junk =
@@ -75,8 +91,16 @@ proc newWorld*(): World =
 
   # Generate random junk
   let junkKinds = toSeq(low(JunkKind) .. high(JunkKind))
-  result.junk.add(newJunk(result, junkKinds[0], vec2(0, screenSize[1] / 2)))
+  for x in countup(bgBoundX[0], bgBoundX[1], 100):
+    for y in countup(bgBoundY[0], bgBoundY[1], 100):
+      let r = rand(100.0)
+      let prob = (x / bgBoundX[1])*100
+      if r < prob:
+        result.junk.add(
+          newJunk(result, junkKinds[0], vec2(x, y))
+        )
 
+  echo("Created ", result.junk.len)
 
 proc draw*(world: World, target: RenderWindow, view: View) =
   target.view = target.defaultView()
@@ -90,7 +114,8 @@ proc draw*(world: World, target: RenderWindow, view: View) =
 
 proc update*(world: World, shipPos: Vector2f, updateMultiplier: float) =
   world.bgSprite.position = vec2(
-    -shipPos.x / 1000, (screenSize[1] / 2) - (shipPos.y / 10000)
+    -shipPos.x / bgMoveFactorX,
+    (screenSize[1] / 2) - (shipPos.y / bgMoveFactorY)
   )
 
   for junk in world.junk:

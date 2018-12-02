@@ -33,7 +33,7 @@ proc draw(game: Game) =
   game.ship.draw(game.window)
   # Debugging:
   let debugText = newText(
-    fmt"T: {game.ship.thrust} S: {game.ship.speed} A: {game.ship.acceleration}",
+    fmt"T: {game.ship.thrust} S: {game.ship.speed} A: {game.ship.acceleration} P: {game.ship.pos}",
     pixelFont, 8
   )
   debugText.position = vec2(5, 5)
