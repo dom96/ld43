@@ -8,6 +8,7 @@ type
   Ship* = ref object
     pos*: Vector2f
     rotation*: float # Rotation of 0 is pointed right.
+    rotationDelta*: float
     thrust*: float
     acceleration*: Vector2f
     speed*: Vector2f
@@ -32,6 +33,7 @@ proc draw*(ship: Ship, target: RenderWindow) =
     sprite.localBounds.width / 2,
     sprite.localBounds.height / 2
   )
+  sprite.scale = vec2(2, 2)
 
   target.drawScaled(sprite)
 
@@ -46,10 +48,19 @@ proc update*(ship: Ship, updateMultiplier: float) =
   ship.speed = ship.speed + ship.acceleration
   ship.pos = ship.pos + ship.speed
 
+  # Rotation
+  ship.rotation += ship.rotationDelta * updateMultiplier
+
 proc thrustUpDown*(ship: Ship, delta: float) =
   ship.thrust += delta
-  ship.thrust = min(100, delta)
-  ship.thrust = max(0, delta)
+  ship.thrust = min(100, ship.thrust)
+  ship.thrust = max(0, ship.thrust)
 
-proc rotationUpDown*(ship: Ship, delta: float) =
-  ship.rotation += delta*10
+proc rotateLeft*(ship: Ship) =
+  ship.rotationDelta = -30
+
+proc rotateRight*(ship: Ship) =
+  ship.rotationDelta = 30
+
+proc rotateReset*(ship: Ship) =
+  ship.rotationDelta = 0

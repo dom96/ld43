@@ -9,7 +9,7 @@ type
     bgTexture*: Texture
     bgSprite*: Sprite
 
-const bgScale = 5*globalScale
+const bgScale = 3*globalScale
 
 proc newWorld*(): World =
   result = World(
@@ -32,5 +32,5 @@ proc draw*(world: World, target: RenderWindow, view: View) =
 
 proc update*(world: World, shipPos: Vector2f) =
   world.bgSprite.position = vec2(
-    -shipPos.x / 100, (screenSize[1] / 2) - (shipPos.y / 1000)
+    -shipPos.x / 1000, (screenSize[1] / 2) - (shipPos.y / 10000)
   )

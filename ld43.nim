@@ -65,9 +65,15 @@ when isMainModule:
         of KeyCode.S:
           game.ship.thrustUpDown(-1)
         of KeyCode.D:
-          game.ship.rotationUpDown(1)
+          game.ship.rotateRight()
         of KeyCode.A:
-          game.ship.rotationUpDown(-1)
+          game.ship.rotateLeft()
+        else: discard
+
+      if event.kind == EventType.KeyReleased:
+        case event.key.code
+        of KeyCode.D, KeyCode.A:
+          game.ship.rotateReset()
         else: discard
 
 
