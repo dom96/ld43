@@ -28,3 +28,12 @@ proc rotate*(vec: Vector2f, deg: float): Vector2f =
     vec.x * cos - vec.y * sin,
     vec.x * sin + vec.y * cos
   )
+
+proc rotate*(vec: Vector2f, deg: float, origin: Vector2f): Vector2f =
+  let angRad = degToRad(deg)
+  let cos = math.cos(angRad)
+  let sin = math.sin(angRad)
+  return vec2(
+    ((vec.x - origin.x) * cos) - ((origin.y - vec.y) * sin) + origin.x,
+    ((origin.y - vec.y) * cos) - ((vec.x - origin.x) * sin) + origin.y
+  )

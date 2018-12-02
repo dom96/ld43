@@ -1,4 +1,4 @@
-import os, strformat
+import os, strformat, math
 
 import csfml
 
@@ -13,6 +13,8 @@ type
     acceleration*: Vector2f
     speed*: Vector2f
     rocketTexture*: Texture
+    flameTextures: array[3, Texture]
+    currentFlame: float
 
 proc newShip*(): Ship =
   result = Ship(
@@ -21,8 +23,12 @@ proc newShip*(): Ship =
     thrust: 0.0,
     acceleration: vec2(0, 0),
     speed: vec2(0, 0),
-    rocketTexture: newTexture(getCurrentDir() / "assets" / "rocket.png")
+    rocketTexture: newTexture(getCurrentDir() / "assets" / "rocket.png"),
+    currentFlame: 0
   )
+
+  for i in 0 ..< 3:
+    result.flameTextures[i] = newTexture(getAssetsDir() / fmt"flame{i+1}.png")
 
 proc draw*(ship: Ship, target: RenderWindow) =
   let sprite = newSprite(ship.rocketTexture)
@@ -35,9 +41,26 @@ proc draw*(ship: Ship, target: RenderWindow) =
   )
   sprite.scale = vec2(2, 2)
 
-  target.drawScaled(sprite)
+  let currentFlame = ship.currentFlame.floor().int
+  let flameSprite = newSprite(ship.flameTextures[currentFlame])
+  let flameSize = ship.thrust / 100 * 60
+  flameSprite.position =
+    vec2(sprite.position.x - 100 - flameSize, sprite.position.y)
+  flameSprite.position = rotate(
+    flameSprite.position, -ship.rotation, sprite.position
+  )
+  flameSprite.scale = vec2(2, 2)
+  flameSprite.origin = vec2(
+    flameSprite.localBounds.width / 2,
+    flameSprite.localBounds.height / 2
+  )
+  flameSprite.rotation = ship.rotation
 
+  if ship.thrust > 0:
+    target.drawScaled(flameSprite)
+  target.drawScaled(sprite)
   sprite.destroy()
+  flameSprite.destroy()
 
 proc update*(ship: Ship, updateMultiplier: float) =
   # We don't calculate resultant force to simplify things.
@@ -50,6 +73,11 @@ proc update*(ship: Ship, updateMultiplier: float) =
 
   # Rotation
   ship.rotation += ship.rotationDelta * updateMultiplier
+
+  # Flames
+  ship.currentFlame += updateMultiplier * 10
+  if ship.currentFlame >= 2.99:
+    ship.currentFlame = 0
 
 proc thrustUpDown*(ship: Ship, delta: float) =
   ship.thrust += delta
