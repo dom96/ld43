@@ -1,4 +1,4 @@
-import os, lenientops, strformat
+import os, lenientops, strformat, random
 
 import csfml, csfml/ext
 
@@ -25,6 +25,7 @@ proc newGame(): Game =
   )
 
   result.window.framerateLimit = 60
+  randomize()
 
 proc draw(game: Game) =
   game.window.clear(Black)
@@ -38,6 +39,7 @@ proc draw(game: Game) =
   debugText.position = vec2(5, 5)
   debugText.color = color(255, 255, 255, 255)
   game.window.drawScaled(debugText)
+  debugText.destroy()
 
   game.window.display()
 
@@ -46,7 +48,7 @@ proc update(game: Game) =
 
   game.camera.center = game.ship.pos
   game.ship.update(updateMultiplier)
-  game.world.update(game.ship.pos)
+  game.world.update(game.ship.pos, updateMultiplier)
 
 when isMainModule:
   var game = newGame()
